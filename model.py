@@ -5,23 +5,33 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import LabelEncoder
 
 # Load dataset
-heart_data = pd.read_csv('heart.csv')
+student_data = pd.read_csv('student-mat.csv', sep=';')
 
 # Display dataset
-print(heart_data.head())
-print(heart_data.tail())
+print(student_data.head())
+print(student_data.tail())
 
 # Shape of dataset
-print(heart_data.shape)
+print(student_data.shape)
 
 # Dataset information
-heart_data.info()
+student_data.info()
+
+# Convert categorical columns into numeric
+le = LabelEncoder()
+
+for column in student_data.select_dtypes(include='object').columns:
+    student_data[column] = le.fit_transform(student_data[column])
+
+# Create target column (Pass = 1, Fail = 0)
+student_data['target'] = (student_data['G3'] >= 10).astype(int)
 
 # Splitting Features and Target
-X = heart_data.drop(columns='target', axis=1)
-Y = heart_data['target']
+X = student_data.drop(columns=['G3', 'target'], axis=1)
+Y = student_data['target']
 
 print(X)
 print(Y)
